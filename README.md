@@ -1,4 +1,4 @@
-# Jira Tool
+# Jira MCP
 
 A tool for interacting with Jira API through MCP.
 
