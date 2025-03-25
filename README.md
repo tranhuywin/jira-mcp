@@ -11,18 +11,6 @@ A tool for interacting with Jira API through MCP.
 - List available statuses
 - Transition issues through workflows
 
-## Setup
-
-1. Clone the repository
-2. Set up environment variables in `.env` file:
-   ```
-   ATLASSIAN_HOST=your_atlassian_host
-   ATLASSIAN_EMAIL=your_email
-   ATLASSIAN_TOKEN=your_token
-   ```
-3. Build and run the tool
-
-
 ## Installation
 
 There are several ways to install the Script Tool:
@@ -50,6 +38,17 @@ go install github.com/nguyenvanduocit/jira-mcp
 ```
 
 ## Config
+
+### Environment
+
+1. Set up environment variables in `.env` file:
+   ```
+   ATLASSIAN_HOST=your_atlassian_host
+   ATLASSIAN_EMAIL=your_email
+   ATLASSIAN_TOKEN=your_token
+   ```
+2. Build and run the tool
+
 
 ### Claude, cursor
 
