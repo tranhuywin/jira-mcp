@@ -37,27 +37,77 @@ There are several ways to install the Script Tool:
 go install github.com/nguyenvanduocit/jira-mcp
 ```
 
+### Option 3: Docker
+
+#### Using Docker directly
+
+1. Build the Docker image:
+   ```bash
+   docker build -t jira-mcp .
+   ```
+
+2. Run the container with environment variables (recommended):
+   ```bash
+   docker run --rm -i \
+     -e ATLASSIAN_HOST=your_atlassian_host \
+     -e ATLASSIAN_EMAIL=your_email \
+     -e ATLASSIAN_TOKEN=your_token \
+     jira-mcp
+   ```
+   
+   For SSE server mode:
+   ```bash
+   docker run --rm -i -p 8080:8080 \
+     -e ATLASSIAN_HOST=your_atlassian_host \
+     -e ATLASSIAN_EMAIL=your_email \
+     -e ATLASSIAN_TOKEN=your_token \
+     jira-mcp -sse_port 8080
+   ```
+
 ## Config
 
-### Environment
+### Environment Variables
 
-1. Set up environment variables in `.env` file:
-   ```
-   ATLASSIAN_HOST=your_atlassian_host
-   ATLASSIAN_EMAIL=your_email
-   ATLASSIAN_TOKEN=your_token
-   ```
-2. Build and run the tool
+The following environment variables are required for authentication:
+```
+ATLASSIAN_HOST=your_atlassian_host
+ATLASSIAN_EMAIL=your_email
+ATLASSIAN_TOKEN=your_token
+```
 
+You can set these:
+1. Directly in the Docker run command (recommended, as shown above)
+2. Through a .env file (optional for local development)
 
 ### Claude, cursor
 
+For local binary with .env file:
 ```
 {
   "mcpServers": {
     "jira": {
       "command": "/path-to/jira-mcp",
       "args": ["-env", "path-to-env-file"]
+    }
+  }
+}
+```
+
+For Docker (recommended):
+```
+{
+  "mcpServers": {
+    "jira": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-e", "ATLASSIAN_HOST=your_atlassian_host",
+        "-e", "ATLASSIAN_EMAIL=your_email",
+        "-e", "ATLASSIAN_TOKEN=your_token",
+        "jira-mcp"
+      ]
     }
   }
 }
