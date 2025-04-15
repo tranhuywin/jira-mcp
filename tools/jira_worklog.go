@@ -21,7 +21,9 @@ func RegisterJiraWorklogTool(s *server.MCPServer) {
 		mcp.WithString("comment", mcp.Description("Comment describing the work done")),
 		mcp.WithString("started", mcp.Description("When the work began, in ISO 8601 format (e.g., 2023-05-01T10:00:00.000+0000). Defaults to current time.")),
 	)
-	s.AddTool(jiraAddWorklogTool, util.ErrorGuard(jiraAddWorklogHandler))
+	if !util.IsReadOnly() {
+		s.AddTool(jiraAddWorklogTool, util.ErrorGuard(jiraAddWorklogHandler))
+	}
 }
 
 func jiraAddWorklogHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -37,7 +39,7 @@ func jiraAddWorklogHandler(ctx context.Context, request mcp.CallToolRequest) (*m
 		return nil, fmt.Errorf("time_spent argument is required")
 	}
 
-	// Convert timeSpent to seconds (this is a simplification - in a real implementation 
+	// Convert timeSpent to seconds (this is a simplification - in a real implementation
 	// you would need to parse formats like "1h 30m" properly)
 	timeSpentSeconds, err := parseTimeSpent(timeSpent)
 	if err != nil {
@@ -106,7 +108,7 @@ Author: %s`,
 func parseTimeSpent(timeSpent string) (int, error) {
 	// This is a simplified version - a real implementation would be more robust
 	// For this example, we'll just handle hours (h) and minutes (m)
-	
+
 	// Simple case: if it's just a number, treat it as seconds
 	seconds, err := strconv.Atoi(timeSpent)
 	if err == nil {
@@ -121,4 +123,4 @@ func parseTimeSpent(timeSpent string) (int, error) {
 
 	// If all else fails, return an error
 	return 0, fmt.Errorf("could not parse time: %s", timeSpent)
-} 
+}

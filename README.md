@@ -73,6 +73,8 @@ The following environment variables are required for authentication:
 ATLASSIAN_HOST=your_atlassian_host
 ATLASSIAN_EMAIL=your_email
 ATLASSIAN_TOKEN=your_token
+# Optional
+READ_ONLY=true  # When set to "true", only read operations are allowed.
 ```
 
 You can set these:
