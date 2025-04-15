@@ -3,6 +3,7 @@ package util
 import (
 	"context"
 	"fmt"
+	"os"
 	"runtime"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -17,7 +18,7 @@ func ErrorGuard(handler server.ToolHandlerFunc) server.ToolHandlerFunc {
 				buf := make([]byte, 4096)
 				n := runtime.Stack(buf, true)
 				stackTrace := string(buf[:n])
-				
+
 				result = mcp.NewToolResultText(fmt.Sprintf("Panic: %v\nStack trace:\n%s", r, stackTrace))
 			}
 		}()
@@ -31,4 +32,8 @@ func ErrorGuard(handler server.ToolHandlerFunc) server.ToolHandlerFunc {
 
 func NewToolResultError(err error) *mcp.CallToolResult {
 	return mcp.NewToolResultText(fmt.Sprintf("Tool Error: %v", err))
+}
+
+func IsReadOnly() bool {
+	return os.Getenv("READ_ONLY") == "true"
 }

@@ -25,7 +25,9 @@ func RegisterJiraIssueTool(s *server.MCPServer) {
 		mcp.WithString("description", mcp.Required(), mcp.Description("Detailed explanation of the issue")),
 		mcp.WithString("issue_type", mcp.Required(), mcp.Description("Type of issue to create (common types: Bug, Task, Story, Epic)")),
 	)
-	s.AddTool(jiraCreateIssueTool, util.ErrorGuard(jiraCreateIssueHandler))
+	if !util.IsReadOnly() {
+		s.AddTool(jiraCreateIssueTool, util.ErrorGuard(jiraCreateIssueHandler))
+	}
 
 	jiraUpdateIssueTool := mcp.NewTool("jira_update_issue",
 		mcp.WithDescription("Modify an existing Jira issue's details. Supports partial updates - only specified fields will be changed"),
@@ -33,7 +35,10 @@ func RegisterJiraIssueTool(s *server.MCPServer) {
 		mcp.WithString("summary", mcp.Description("New title for the issue (optional)")),
 		mcp.WithString("description", mcp.Description("New description for the issue (optional)")),
 	)
-	s.AddTool(jiraUpdateIssueTool, util.ErrorGuard(jiraUpdateIssueHandler))
+	if !util.IsReadOnly() {
+		s.AddTool(jiraUpdateIssueTool, util.ErrorGuard(jiraUpdateIssueHandler))
+	}
+
 }
 
 func jiraIssueHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -43,7 +48,7 @@ func jiraIssueHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.Ca
 	if !ok {
 		return nil, fmt.Errorf("issue_key argument is required")
 	}
-	
+
 	issue, response, err := client.Issue.Get(ctx, issueKey, nil, []string{"transitions"})
 	if err != nil {
 		if response != nil {

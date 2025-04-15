@@ -17,7 +17,9 @@ func RegisterJiraCommentTools(s *server.MCPServer) {
 		mcp.WithString("issue_key", mcp.Required(), mcp.Description("The unique identifier of the Jira issue (e.g., KP-2, PROJ-123)")),
 		mcp.WithString("comment", mcp.Required(), mcp.Description("The comment text to add to the issue")),
 	)
-	s.AddTool(jiraAddCommentTool, util.ErrorGuard(jiraAddCommentHandler))
+	if !util.IsReadOnly() {
+		s.AddTool(jiraAddCommentTool, util.ErrorGuard(jiraAddCommentHandler))
+	}
 
 	jiraGetCommentsTool := mcp.NewTool("jira_get_comments",
 		mcp.WithDescription("Retrieve all comments from a Jira issue"),
@@ -51,11 +53,11 @@ func jiraAddCommentHandler(ctx context.Context, request mcp.CallToolRequest) (*m
 		return nil, fmt.Errorf("failed to add comment: %v", err)
 	}
 
-	result := fmt.Sprintf("Comment added successfully!\nID: %s\nAuthor: %s\nCreated: %s", 
-		comment.ID, 
+	result := fmt.Sprintf("Comment added successfully!\nID: %s\nAuthor: %s\nCreated: %s",
+		comment.ID,
 		comment.Author.DisplayName,
 		comment.Created)
-	
+
 	return mcp.NewToolResultText(result), nil
 }
 
@@ -86,8 +88,8 @@ func jiraGetCommentsHandler(ctx context.Context, request mcp.CallToolRequest) (*
 			authorName = comment.Author.DisplayName
 		}
 
-		result += fmt.Sprintf("ID: %s\nAuthor: %s\nCreated: %s\nUpdated: %s\nBody: %s\n\n", 
-			comment.ID, 
+		result += fmt.Sprintf("ID: %s\nAuthor: %s\nCreated: %s\nUpdated: %s\nBody: %s\n\n",
+			comment.ID,
 			authorName,
 			comment.Created,
 			comment.Updated,
